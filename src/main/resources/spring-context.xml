@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+	
+	<context:property-placeholder location="file:${config}" />
+	
+	<!-- 
+	====================================================================================================
+	Imports
+	====================================================================================================
+	-->
+	<import resource="classpath*:mysql-datasource.xml" />
+	
+	<!-- 
+	====================================================================================================
+	Hibernate session factory, with database connection settings
+	====================================================================================================
+	-->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="mysqlDataSource" />
+		<property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                
+				<!-- JDBC connection pool -->
+				<prop key="hibernate.connection.pool_size">10</prop>
+		        <prop key="hibernate.max_fetch_depth">5</prop>
+		        <prop key="hibernate.jdbc.fetch_size">200</prop>
+		        <prop key="hibernate.jdbc.batch_size">100</prop>
+		        <prop key="hibernate.c3p0.min_size">5</prop>
+		        <prop key="hibernate.c3p0.max_size">20</prop>
+		        <prop key="hibernate.c3p0.timeout">600</prop>
+		        <prop key="hibernate.c3p0.max_statements">50</prop>
+		        <prop key="hibernate.c3p0.idle_test_period">10000</prop>
+                <prop key="hibernate.c3p0.testConnectionOnCheckout">true</prop>
+                
+                <!-- Hibernate -->
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                
+                <!-- Second-level cache -->
+				<prop key="hibernate.cache.use_second_level_cache">false</prop>
+            </props>
+        </property>
+		<property name="packagesToScan">
+			<list>
+				<value>com.strive.labs.extjs.practicum.model</value>
+			</list>
+	    </property>
+	</bean>
+	
+	<!--
+	============================================================================================
+	Transaction manager 
+	============================================================================================
+	-->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+   		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<!-- 
+	============================================================================================
+	Find annotated beans in the code base, including DAOs and Services
+	============================================================================================
+	-->
+	<context:annotation-config/>
+	<context:component-scan base-package="com.strive.labs.extjs.practicum.dao" />
+	<context:component-scan base-package="com.strive.labs.extjs.practicum.service" />
+	
+	<!-- 
+	============================================================================================
+	Database LOB Handling
+	============================================================================================
+	-->
+	<bean id="defaultLobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler" />
+	
+	<!-- 
+	============================================================================================
+	Bean validation using Hibernate validator
+	============================================================================================
+	-->
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+</beans>

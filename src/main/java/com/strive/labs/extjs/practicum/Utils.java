@@ -1,6 +1,6 @@
 package com.strive.labs.extjs.practicum;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;;
 
 public final class Utils {
 	private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
