@@ -13,4 +13,8 @@ public class LoginResponse extends JsonResponse {
 			setMessage("Authentication failed: check username or password");
 		}
 	}
+
+	public LoginResponse(boolean success, String message) {
+		super(success, message);
+	}
 }

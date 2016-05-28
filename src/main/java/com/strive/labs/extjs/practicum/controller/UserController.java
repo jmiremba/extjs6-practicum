@@ -13,6 +13,7 @@ import com.strive.labs.extjs.practicum.Urls;
 import com.strive.labs.extjs.practicum.Web;
 import com.strive.labs.extjs.practicum.json.JsonResponse;
 import com.strive.labs.extjs.practicum.security.LoginResponse;
+import com.strive.labs.extjs.practicum.security.LogoutResponse;
 import com.strive.labs.extjs.practicum.service.UserService;
 
 @Controller
@@ -22,7 +23,7 @@ public class UserController {
 	
 	@RequestMapping(value=Urls.Login, method=RequestMethod.POST, produces=Web.ContentTypeJson)
 	@ResponseBody
-	public JsonResponse createUser(HttpServletRequest request, 
+	public JsonResponse doLogin(HttpServletRequest request, 
 			@RequestParam(required=true, value="username") String username, 
 			@RequestParam(required=true, value="password") String password) {
 		LoginResponse json = null;
@@ -31,8 +32,31 @@ public class UserController {
 			Long userId = userService.authenticate(username, password);
 			json = new LoginResponse(userId != null);
 		} catch(Exception ex) {
-			json = new LoginResponse(false);
+			json = new LoginResponse(false, ex.getMessage());
 		}
+		// Return
+		return json;
+	}
+	
+	@RequestMapping(value=Urls.Logout, method=RequestMethod.GET, produces=Web.ContentTypeJson)
+	@ResponseBody
+	public JsonResponse doLogout(HttpServletRequest request) {
+		LogoutResponse json = null;
+		try {
+			// End session
+			request.getSession().invalidate();
+			json = new LogoutResponse(true);
+		} catch(Exception ex) {
+			json = new LogoutResponse(false, ex.getMessage());
+		}
+		// Return
+		return json;
+	}
+	
+	@RequestMapping(value=Urls.Session, method=RequestMethod.GET, produces=Web.ContentTypeJson)
+	@ResponseBody
+	public JsonResponse checkSession(HttpServletRequest request) {
+		JsonResponse json = new JsonResponse(true);
 		// Return
 		return json;
 	}
