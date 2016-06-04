@@ -1,5 +1,7 @@
 package com.strive.labs.extjs.practicum.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.strive.labs.extjs.practicum.Urls;
 import com.strive.labs.extjs.practicum.Web;
 import com.strive.labs.extjs.practicum.json.JsonResponse;
+import com.strive.labs.extjs.practicum.menu.MenuGroup;
 import com.strive.labs.extjs.practicum.security.LoginResponse;
 import com.strive.labs.extjs.practicum.security.LogoutResponse;
 import com.strive.labs.extjs.practicum.service.UserService;
@@ -58,6 +61,25 @@ public class UserController {
 	public JsonResponse checkSession(HttpServletRequest request) {
 		JsonResponse json = new JsonResponse(true);
 		// Return
+		return json;
+	}
+	
+	@RequestMapping(value=Urls.Menu, method=RequestMethod.GET, produces=Web.ContentTypeJson)
+	@ResponseBody
+	public JsonResponse getMenu(HttpServletRequest request) {
+		JsonResponse json = new JsonResponse();
+		try {
+			// Logged in user
+			String username = "prideafrica";
+			
+			// Menus
+			List<MenuGroup> menus = userService.getMenu(username);
+			
+			// Response
+			json.setSuccessData(menus);
+		} catch(Exception ex) {
+			json = new JsonResponse(false, ex.getMessage());
+		}
 		return json;
 	}
 }

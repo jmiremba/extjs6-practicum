@@ -8,6 +8,7 @@ package com.strive.labs.extjs.practicum.json;
 public class JsonResponse {
 	private boolean success;
 	private String message;
+	private Object data;
 	
 	public JsonResponse() {
 		this.success = false;
@@ -44,5 +45,18 @@ public class JsonResponse {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
+	public void setSuccessData(Object data) {
+		this.success = true;
+		this.data = data;
 	}
 }
