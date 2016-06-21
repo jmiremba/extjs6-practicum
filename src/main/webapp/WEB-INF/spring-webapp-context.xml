@@ -8,11 +8,23 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd 
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd"> 
 	
+	<context:property-placeholder location="file:${practicum.properties}" />
+	
 	<context:component-scan base-package="com.strive.labs.extjs.practicum.controller" />
 	
     <annotation-driven />
 
     <resources mapping="/resources/**" location="/resources/" />
+    <resources mapping="/profileimages/**" location="file:${profile.images.location}/"/>
+    
+    <beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="maxUploadSize" value="5242880"/>
+		<beans:property name="maxInMemorySize" value="1048576" />
+	</beans:bean>
+    
+    <beans:bean id="applicationData" class="com.strive.labs.extjs.practicum.AppData">
+		<beans:property name="profileImageDirectory" value="${profile.images.location}"/>
+	</beans:bean>
     
     <default-servlet-handler/>
 </beans:beans> 

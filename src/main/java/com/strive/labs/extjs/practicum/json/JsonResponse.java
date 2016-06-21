@@ -59,4 +59,14 @@ public class JsonResponse {
 		this.success = true;
 		this.data = data;
 	}
+
+	public void setException(Exception ex) {
+		this.success = false;
+		this.data = ex.getMessage();
+	}
+
+	public void setSuccessMessage(String message) {
+		this.success = true;
+		this.message = message;
+	}
 }
